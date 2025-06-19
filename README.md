@@ -1,7 +1,9 @@
 # zippy_ui
 
 zippy robo ui for jetson orin nano
+# run application 
 python main.py
+
 ## installation
 
 clone the repository.
