@@ -322,7 +322,7 @@ Window {
                             y: 69
                             width: 100
                             height: 100
-                            source: "../images/svg_images/add_box_96dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
+                            source: "../images/svg_images/box_add_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
                             fillMode: Image.PreserveAspectFit
                         }
 
