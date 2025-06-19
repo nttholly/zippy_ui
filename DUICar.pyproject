@@ -1,0 +1,9 @@
+{
+    "files": [
+        "main.py",
+        "main.qml",
+        "qml/pages/QRempty.qml",
+        "qml/pages/QRfull.qml",
+        "qml/speedometer.qml"
+    ]
+}
