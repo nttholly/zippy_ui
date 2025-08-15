@@ -2,8 +2,10 @@
     "files": [
         "main.py",
         "main.qml",
-        "qml/pages/QRempty.qml",
-        "qml/pages/QRfull.qml",
+        "qml/pages/Aboutus.qml",
+        "qml/pages/Help.qml",
+        "qml/pages/Robotface.qml",
+        "qml/smallface.qml",
         "qml/speedometer.qml"
     ]
 }
