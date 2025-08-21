@@ -3,10 +3,13 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 Window {
+    id: helpWindow
     width: 1000
     height: 580
     title: "Help"
-
+    Component.onCompleted: {
+        boxManager.registerSubWindow(helpWindow);
+    }
     Rectangle {
         width: 1000
         height: 580
@@ -18,7 +21,7 @@ Window {
             spacing: 30
 
             Label {
-                text: "Hướng Dẫn Sử Dụng Ứng Dụng"
+                text: "Hướng Dẫn Sử Dụng Zippy"
                 font.pixelSize: 36
                 font.bold: true
                 Layout.alignment: Qt.AlignHCenter
@@ -39,7 +42,7 @@ Window {
                         font.bold: true
                     }
                     Label {
-                        text: "Ứng dụng này cho phép bạn quản lý các hộp chứa hàng, kiểm tra tình trạng pin, và quét mã QR để nhận hoặc gửi hàng."
+                        text: "Zippy là một robot giao hàng được phát triển bởi 3 sinh viên chuyên ngành IoT của đại học FPT cho đồ án tốt nghiệp Smart Solutions: IoT and Robotic to Enhance Delivery Service Efficiency : Nguyễn Thành Lập, Nguyễn Thành Tùng, Nguyễn Công Khanh.\n"
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
                     }
@@ -50,10 +53,7 @@ Window {
                         font.bold: true
                     }
                     Label {
-                        text: "1. Mở ứng dụng.\n"
-                              + "2. Chọn chức năng mong muốn từ menu chính.\n"
-                              + "3. Quét mã QR khi được yêu cầu.\n"
-                              + "4. Kiểm tra trạng thái hộp và nhận thông báo."
+                        text: "1. Mở ứng dụng.\n" + "2. Chọn chức năng mong muốn từ menu chính.\n" + "3. Quét mã QR khi được yêu cầu.\n" + "4. Kiểm tra trạng thái hộp và nhận thông báo."
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
                     }
@@ -64,9 +64,7 @@ Window {
                         font.bold: true
                     }
                     Label {
-                        text: "- Giữ kết nối mạng LAN để dữ liệu luôn được cập nhật.\n"
-                              + "- Sạc pin khi dưới 20%.\n"
-                              + "- Kiểm tra bản cập nhật ứng dụng thường xuyên."
+                        text: "- Giữ kết nối mạng LAN để dữ liệu luôn được cập nhật.\n" + "- Sạc pin khi dưới 20%.\n" + "- Kiểm tra bản cập nhật ứng dụng thường xuyên."
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
                     }
@@ -77,7 +75,7 @@ Window {
                         font.bold: true
                     }
                     Label {
-                        text: "Email: support@teamdui.com\nSĐT: 0123 456 789"
+                        text: "Email: tungthhb@gmail.com\nSĐT: 0944971696"
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
                     }
