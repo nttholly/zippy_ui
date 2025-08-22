@@ -4,10 +4,10 @@ from PySide6.QtCore import QObject, Slot, Signal, QTimer
 import sys
 import psutil
 import base64
-import requests
 import io
 from PIL import Image
-
+from mqtt_client import MqttClient, MqttConfig
+from http_client import HttpClient
 
 class BoxManager(QObject):
     batteryLevelChanged = Signal()
@@ -20,8 +20,9 @@ class BoxManager(QObject):
             "box2": False,
         }
         self._batteryLevel = 0
-        self.loader = None  # sẽ được gán từ main.py
+        self.loader = None
         self.updateBatteryLevel()
+        self.http = HttpClient(base_url="http://192.168.0.107:8080", timeout=10.0)
 
     @Slot(str, result=str)
     def getQRPage(self, box_id):
@@ -30,57 +31,36 @@ class BoxManager(QObject):
     @Slot(str, result=str)
     def getQRImage(self, box_id):
         """
-        Box trống: trả QR code từ API
-        Box đầy: gửi cảnh báo tới smallface và trả ảnh cảnh báo
+        Empty box: return QR code (from API).
+        Occupied box: emit alert and return a warning image.
         """
         state = self.box_states.get(box_id, False)
 
-        if state:  # Box đầy
-            self.boxAlert.emit(box_id, "Đã có hàng")
-            img = Image.new("RGB", (200, 200), color=(255, 100, 100))
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            img_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-            return f"data:image/png;base64,{img_b64}"
-
-        # Box trống → Lấy QR code từ API
-        order_code = "O-122864"
-        api_url = f"http://192.168.0.107:8080"
+        if state:
+            self.boxAlert.emit(box_id, "Box is occupied")
+            return self._solid_color_png_data_url((255, 100, 100))  # red
 
         try:
-            print(f"🔍 [DEBUG] Đang gọi API: {api_url}")
-            response = requests.get(api_url, timeout=10)
-            print(f"🔍 [DEBUG] API status: {response.status_code}")
-
-            if response.status_code == 200:
-                response_data = response.json()
-                if 'data' in response_data and 'qrCodeBase64' in response_data['data']:
-                    qr_base64 = response_data['data']['qrCodeBase64']
-                    print("✅ [DEBUG] Lấy QR code thành công.")
-                    return f"data:image/png;base64,{qr_base64}"
-                else:
-                    print("⚠️ [DEBUG] API trả về JSON nhưng không có key 'qrCodeBase64'.")
+            qr_b64 = self.http.fetch_qr_base64(path="/")  # adjust API path if needed
+            if qr_b64:
+                print("[DEBUG] QR code fetched successfully.")
+                return f"data:image/png;base64,{qr_b64}"
             else:
-                print(f"⚠️ [DEBUG] API trả về status code {response.status_code}")
-
+                print("[WARN] QR not found in JSON, returning gray placeholder.")
+                return self._solid_color_png_data_url((220, 220, 220))
         except requests.exceptions.ConnectionError:
-            print(f"❌ [DEBUG] Không thể kết nối API tại {api_url}. Kiểm tra IP/Port hoặc mạng LAN.")
-            # Ảnh vàng cảnh báo kết nối
-            img = Image.new("RGB", (200, 200), color=(255, 255, 102))
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            img_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-            return f"data:image/png;base64,{img_b64}"
-
+            print("[ERROR] Cannot connect to API. Returning yellow warning placeholder.")
+            return self._solid_color_png_data_url((255, 255, 102))
         except Exception as e:
-            print(f"❌ [DEBUG] Lỗi không xác định khi gọi API: {e}")
+            print(f"[ERROR] Unexpected error: {e}")
+            return self._solid_color_png_data_url((220, 220, 220))
 
-        # Nếu lỗi khác → trả ảnh xám
-        img = Image.new("RGB", (200, 200), color=(220, 220, 220))
+    def _solid_color_png_data_url(self, rgb):
+        img = Image.new("RGB", (200, 200), color=rgb)
         buf = io.BytesIO()
         img.save(buf, format="PNG")
-        img_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-        return f"data:image/png;base64,{img_b64}"
+        import base64
+        return f"data:image/png;base64,{base64.b64encode(buf.getvalue()).decode('utf-8')}"
 
     @Slot()
     def updateBatteryLevel(self):
@@ -93,13 +73,13 @@ class BoxManager(QObject):
     def getBatteryLevel(self):
         return self._batteryLevel
 
-    # ✅ Slot mở trang About Us
+    # About Us
     @Slot()
     def openAboutUs(self):
         if self.loader:
             self.loader.setProperty("source", "pages/Aboutus.qml")
 
-    # ✅ Slot mở trang Help
+    # Help
     @Slot()
     def openHelp(self):
         if self.loader:
@@ -147,13 +127,13 @@ if __name__ == "__main__":
             try:
                 robot_face.robotClicked.connect(switch_to_mainpage)
             except Exception as e:
-                print("❌ Không kết nối được signal robotClicked:", e)
+                print("Không kết nối được signal robotClicked:", e)
 
     QTimer.singleShot(100, connect_robot_signal)
 
     try:
         window.userInteracted.connect(reset_idle_timer)
     except Exception as e:
-        print("⚠️ Không thể kết nối signal userInteracted:", e)
+        print("Không thể kết nối signal userInteracted:", e)
 
     sys.exit(app.exec())

@@ -1,7 +1,9 @@
 {
     "files": [
+        "http_client.py",
         "main.py",
         "main.qml",
+        "mqtt_client.py",
         "qml/pages/Aboutus.qml",
         "qml/pages/Help.qml",
         "qml/pages/Robotface.qml",

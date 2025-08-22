@@ -5,9 +5,12 @@ import QtQuick.Layouts 2.15
 
 Window {
     id: mainwindow
+    visibility: Window.FullScreen               // bật true fullscreen
+    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint  // không viền + luôn trên cùng                        // nền OPAQUE (tránh compositor coi là trong suốt)
+    Component.onCompleted: showFullScreen()
     signal showQRCode(string data)
-    width: 1000
-    height: 580
+    width: 1024
+    height: 600
     opacity: 1
     visible: true
     signal userInteracted // 👈 thêm dòng này
@@ -31,10 +34,10 @@ Window {
         border.color: "#190249"
         border.width: 1
         anchors.fill: parent
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        anchors.topMargin: 10
-        anchors.bottomMargin: 10
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        anchors.topMargin: 0
+        anchors.bottomMargin: 0
 
         Rectangle {
             id: appcontainer
@@ -232,9 +235,48 @@ Window {
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
                         anchors.leftMargin: 5
+                        anchors.rightMargin: 0
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignVCenter
                         font.pointSize: 20
+                    }
+
+                    Button {
+                        id: closeBtn
+                        text: "X"
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.leftMargin: 914
+                        anchors.rightMargin: -107
+                        anchors.topMargin: 0
+                        anchors.bottomMargin: 0
+                        font.pixelSize: 20
+                        background: Rectangle {
+                            color: "#aa0000"
+                            radius: 6
+                        }
+                        onClicked: Qt.quit()
+                    }
+
+                    Button {
+                        id: minimizeBtn
+                        text: "-"
+                        anchors.left: parent.left
+                        anchors.right: closeBtn.left
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.leftMargin: 874
+                        anchors.rightMargin: 0
+                        anchors.topMargin: 0
+                        anchors.bottomMargin: 0
+                        font.pixelSize: 24
+                        background: Rectangle {
+                            color: "#444"
+                            radius: 6
+                        }
+                        onClicked: mainwindow.showMinimized()
                     }
                 }
             }
@@ -274,10 +316,6 @@ Window {
                         Image {
                             id: image7
                             anchors.fill: parent
-                            anchors.leftMargin: 10
-                            anchors.rightMargin: 10
-                            anchors.topMargin: 10
-                            anchors.bottomMargin: 10
                             source: "../images/svg_images/help_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48(1).svg"
                             fillMode: Image.PreserveAspectFit
                         }
@@ -309,10 +347,6 @@ Window {
                         Image {
                             id: image2213
                             anchors.fill: parent
-                            anchors.leftMargin: 10
-                            anchors.rightMargin: 10
-                            anchors.topMargin: 10
-                            anchors.bottomMargin: 10
                             source: "../images/svg_images/groups_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
                             fillMode: Image.PreserveAspectFit
                         }
@@ -354,16 +388,20 @@ Window {
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
                         anchors.leftMargin: 0
-                        anchors.rightMargin: 452
+                        anchors.rightMargin: 483
                         anchors.topMargin: 0
                         anchors.bottomMargin: 0
 
                         Image {
                             id: image1
-                            x: 178
-                            y: 69
-                            width: 100
-                            height: 100
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            anchors.leftMargin: 178
+                            anchors.rightMargin: 176
+                            anchors.topMargin: 69
+                            anchors.bottomMargin: 69
                             source: "../images/svg_images/box_add_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
                             fillMode: Image.PreserveAspectFit
                         }
@@ -388,17 +426,21 @@ Window {
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        anchors.leftMargin: 453
+                        anchors.leftMargin: 467
                         anchors.rightMargin: 0
                         anchors.topMargin: 0
                         anchors.bottomMargin: 0
 
                         Image {
                             id: image2
-                            x: 178
-                            y: 69
-                            width: 100
-                            height: 100
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            anchors.leftMargin: 203
+                            anchors.rightMargin: 196
+                            anchors.topMargin: 69
+                            anchors.bottomMargin: 69
                             source: "../images/svg_images/box_add_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
                             fillMode: Image.PreserveAspectFit
                         }
@@ -431,7 +473,7 @@ Window {
                         visible: true
                         anchors.fill: parent
                         anchors.leftMargin: 0
-                        anchors.rightMargin: 455
+                        anchors.rightMargin: 483
                         source: "smallface.qml"    // Thay bằng đường dẫn đúng tới file speedometer của bạn
 
                     }
@@ -443,7 +485,7 @@ Window {
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        anchors.leftMargin: 0
+                        anchors.leftMargin: 12
                         anchors.rightMargin: 0
                         anchors.topMargin: 0
                         anchors.bottomMargin: 0
@@ -451,7 +493,6 @@ Window {
                         ColumnLayout {
                             id: columnLayout
                             anchors.fill: parent
-                            anchors.leftMargin: 0
 
                             RowLayout {
                                 id: rowLayout1
@@ -545,7 +586,7 @@ Window {
     Loader {
         id: robotface
         objectName: "pageLoader" // 👉 thêm dòng này
-        visible: true
+        visible: false
         anchors.fill: parent
         anchors.leftMargin: 0
         anchors.rightMargin: 0
