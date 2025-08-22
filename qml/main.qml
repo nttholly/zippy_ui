@@ -241,43 +241,6 @@ Window {
                         font.pointSize: 20
                     }
 
-                    Button {
-                        id: closeBtn
-                        text: "X"
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.leftMargin: 914
-                        anchors.rightMargin: -107
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: 0
-                        font.pixelSize: 20
-                        background: Rectangle {
-                            color: "#aa0000"
-                            radius: 6
-                        }
-                        onClicked: Qt.quit()
-                    }
-
-                    Button {
-                        id: minimizeBtn
-                        text: "-"
-                        anchors.left: parent.left
-                        anchors.right: closeBtn.left
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.leftMargin: 874
-                        anchors.rightMargin: 0
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: 0
-                        font.pixelSize: 24
-                        background: Rectangle {
-                            color: "#444"
-                            radius: 6
-                        }
-                        onClicked: mainwindow.showMinimized()
-                    }
                 }
             }
 
@@ -586,7 +549,7 @@ Window {
     Loader {
         id: robotface
         objectName: "pageLoader" // 👉 thêm dòng này
-        visible: false
+        visible: true
         anchors.fill: parent
         anchors.leftMargin: 0
         anchors.rightMargin: 0
