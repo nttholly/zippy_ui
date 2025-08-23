@@ -9,7 +9,7 @@ Rectangle {
     Rectangle {
         width: 1000
         height: 580
-        color: "#f4f4f4"
+        color: "#152063"
 
         ColumnLayout {
             anchors.fill: parent
@@ -21,14 +21,16 @@ Rectangle {
                 font.pixelSize: 36
                 font.bold: true
                 Layout.alignment: Qt.AlignHCenter
+                color: "white"
             }
 
             Label {
-                text: "Chúng tôi là một nhóm gồm 3 thành viên S"
+                text: "Chúng tôi là một nhóm gồm 3 thành viên yêu thích Robot và IoT"
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignHCenter
                 Layout.alignment: Qt.AlignHCenter
                 font.pixelSize: 18
+                color: "white"
             }
 
             RowLayout {
@@ -56,11 +58,13 @@ Rectangle {
                         font.pixelSize: 18
                         font.bold: true
                         horizontalAlignment: Text.AlignHCenter
+                        color: "white"
                     }
                     Label {
-                        text: "Hardware and firmware"
+                        text: "Hardware and Firmware"
                         font.pixelSize: 16
                         horizontalAlignment: Text.AlignHCenter
+                        color: "white"
                     }
                 }
 
@@ -84,11 +88,13 @@ Rectangle {
                         font.pixelSize: 18
                         font.bold: true
                         horizontalAlignment: Text.AlignHCenter
+                        color: "white"
                     }
                     Label {
-                        text: "Leader"
+                        text: "Leader-Mobile Application"
                         font.pixelSize: 16
                         horizontalAlignment: Text.AlignHCenter
+                        color: "white"
                     }
                 }
 
@@ -112,11 +118,13 @@ Rectangle {
                         font.pixelSize: 18
                         font.bold: true
                         horizontalAlignment: Text.AlignHCenter
+                        color: "white"
                     }
                     Label {
                         text: "DUI Designer"
                         font.pixelSize: 16
                         horizontalAlignment: Text.AlignHCenter
+                        color: "white"
                     }
                 }
             }

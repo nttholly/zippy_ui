@@ -9,7 +9,7 @@ Rectangle {
     Rectangle {
         width: 1000
         height: 580
-        color: "#f4f4f4"
+        color: "#152063"
 
         ColumnLayout {
             anchors.fill: parent
@@ -21,6 +21,7 @@ Rectangle {
                 font.pixelSize: 36
                 font.bold: true
                 Layout.alignment: Qt.AlignHCenter
+                color: "white"
             }
 
             ScrollView {
@@ -36,44 +37,52 @@ Rectangle {
                         text: "📌 Giới thiệu"
                         font.pixelSize: 22
                         font.bold: true
+                        color: "white"
                     }
                     Label {
-                        text: "Zippy là một robot giao hàng được phát triển bởi 3 sinh viên chuyên ngành IoT của đại học FPT cho đồ án tốt nghiệp Smart Solutions: IoT and Robotic to Enhance Delivery Service Efficiency : Nguyễn Thành Lập, Nguyễn Thành Tùng, Nguyễn Công Khanh.\n"
+                        text: "Zippy là một robot giao hàng được phát triển bởi 3 sinh viên chuyên ngành IoT của đại học FPT\n trong đồ án tốt nghiệp:\n Smart Solutions: IoT and Robotic to Enhance Delivery Service Efficiency \n Nguyễn Thành Lập, Nguyễn Thành Tùng, Nguyễn Công Khanh.\n"
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
+                        color: "white"
                     }
 
                     Label {
                         text: "🛠 Cách sử dụng"
                         font.pixelSize: 22
                         font.bold: true
+                        color: "white"
                     }
                     Label {
-                        text: "1. Mở ứng dụng.\n" + "2. Chọn chức năng mong muốn từ menu chính.\n" + "3. Quét mã QR khi được yêu cầu.\n" + "4. Kiểm tra trạng thái hộp và nhận thông báo."
+                        text: "1. Chọn chức năng mong muốn từ menu chính.\n2.Chọn bỉểu tượng box để đặt hàng và nhận hàng, Quét QR khi QR hiện lên \n3. Kiểm tra trạng thái hộp và vị trí ở các status ở bên phải.\n4.Chú ý đọc các thông báo từ Zippy'face nhỏ."
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
+                        color: "white"
                     }
 
                     Label {
                         text: "💡 Mẹo sử dụng"
                         font.pixelSize: 22
                         font.bold: true
+                        color: "white"
                     }
                     Label {
-                        text: "- Giữ kết nối mạng LAN để dữ liệu luôn được cập nhật.\n" + "- Sạc pin khi dưới 20%.\n" + "- Kiểm tra bản cập nhật ứng dụng thường xuyên."
+                        text: "- Giữ kết nối mạng LAN để dữ liệu luôn được cập nhật.\n"  + "- Sạc Pin khi Pin Dưới 20%"
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
+                        color: "white"
                     }
 
                     Label {
                         text: "📞 Hỗ trợ"
                         font.pixelSize: 22
                         font.bold: true
+                        color: "white"
                     }
                     Label {
                         text: "Email: tungthhb@gmail.com\nSĐT: 0944971696"
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
+                        color: "white"
                     }
                 }
             }

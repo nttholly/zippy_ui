@@ -240,7 +240,6 @@ Window {
                         verticalAlignment: Text.AlignVCenter
                         font.pointSize: 20
                     }
-
                 }
             }
 
@@ -265,6 +264,10 @@ Window {
                         anchors.fill: parent
                         spacing: 20   // khoảng cách giữa các button
                         anchors.margins: 20
+                        anchors.leftMargin: 10
+                        anchors.rightMargin: 10
+                        anchors.topMargin: 10
+                        anchors.bottomMargin: 10
 
                         // Home button
                         Button {
@@ -295,9 +298,9 @@ Window {
                             }
                             onClicked: {
                                 if (pageLoader.source === "pages/Help.qml") {
-                                    pageLoader.source = ""
+                                    pageLoader.source = "";
                                 } else {
-                                    pageLoader.source = "pages/Help.qml"
+                                    pageLoader.source = "pages/Help.qml";
                                 }
                             }
                         }
@@ -316,9 +319,9 @@ Window {
                             }
                             onClicked: {
                                 if (pageLoader.source === "pages/Aboutus.qml") {
-                                    pageLoader.source = ""
+                                    pageLoader.source = "";
                                 } else {
-                                    pageLoader.source = "pages/Aboutus.qml"
+                                    pageLoader.source = "pages/Aboutus.qml";
                                 }
                             }
                         }
@@ -371,7 +374,9 @@ Window {
                             anchors.fill: parent
                             background: null
                             onClicked: {
-                                openQRWindow("box1");
+                                qrloader.source = "pages/QRdynamic.qml"
+                                qrloader.item.boxId = "box1"
+                                qrloader.visible = true
                             }
                         }
                     }
@@ -410,7 +415,9 @@ Window {
                             anchors.fill: parent
                             background: null
                             onClicked: {
-                                openQRWindow("box2");
+                                qrloader.source = "pages/QRdynamic.qml"
+                                qrloader.item.boxId = "box2"
+                                qrloader.visible = true
                             }
                         }
                     }
@@ -551,6 +558,12 @@ Window {
     }
 
     Loader {
+        id: qrloader
+        anchors.fill: parent
+        visible: false
+    }
+
+    Loader {
         id: robotface
         objectName: "pageLoader" // 👉 thêm dòng này
         visible: false
@@ -578,5 +591,4 @@ Window {
             mouse.accepted = false;
         }
     }
-
 }

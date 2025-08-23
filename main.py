@@ -6,8 +6,10 @@ import psutil
 import base64
 import io
 from PIL import Image
+import requests   # ✅ Bổ sung import requests để bắt exception đúng
 from mqtt_client import MqttClient, MqttConfig
 from http_client import HttpClient
+
 
 class BoxManager(QObject):
     batteryLevelChanged = Signal()
@@ -22,7 +24,7 @@ class BoxManager(QObject):
         self._batteryLevel = 0
         self.loader = None
         self.updateBatteryLevel()
-        self.http = HttpClient(base_url="http://192.168.0.107:8080", timeout=10.0)
+        self.http = HttpClient(base_url="http://192.168.0.107:8080", timeout=5.0)  # giảm timeout để tránh "treo"
 
     @Slot(str, result=str)
     def getQRPage(self, box_id):
@@ -43,23 +45,22 @@ class BoxManager(QObject):
         try:
             qr_b64 = self.http.fetch_qr_base64(path="/")  # adjust API path if needed
             if qr_b64:
-                print("[DEBUG] QR code fetched successfully.")
+                print(f"[DEBUG] QR code fetched successfully for {box_id}.")
                 return f"data:image/png;base64,{qr_b64}"
             else:
-                print("[WARN] QR not found in JSON, returning gray placeholder.")
+                print(f"[WARN] QR not found in JSON for {box_id}, returning gray placeholder.")
                 return self._solid_color_png_data_url((220, 220, 220))
         except requests.exceptions.ConnectionError:
-            print("[ERROR] Cannot connect to API. Returning yellow warning placeholder.")
+            print(f"[ERROR] Cannot connect to API for {box_id}. Returning yellow warning placeholder.")
             return self._solid_color_png_data_url((255, 255, 102))
         except Exception as e:
-            print(f"[ERROR] Unexpected error: {e}")
+            print(f"[ERROR] Unexpected error while fetching QR for {box_id}: {e}")
             return self._solid_color_png_data_url((220, 220, 220))
 
     def _solid_color_png_data_url(self, rgb):
         img = Image.new("RGB", (200, 200), color=rgb)
         buf = io.BytesIO()
         img.save(buf, format="PNG")
-        import base64
         return f"data:image/png;base64,{base64.b64encode(buf.getvalue()).decode('utf-8')}"
 
     @Slot()
