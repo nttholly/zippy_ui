@@ -2,14 +2,10 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-Window {
-    id: helpWindow
-    width: 1000
-    height: 580
-    title: "Help"
-    Component.onCompleted: {
-        boxManager.registerSubWindow(helpWindow);
-    }
+Rectangle {
+    width: 952
+    height: 520
+
     Rectangle {
         width: 1000
         height: 580

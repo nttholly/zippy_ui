@@ -2,9 +2,9 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-Window {
-    width: 1000
-    height: 580
+Rectangle {
+    width: 952
+    height: 520
 
     Rectangle {
         width: 1000

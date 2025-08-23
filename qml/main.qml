@@ -260,71 +260,68 @@ Window {
                     anchors.left: parent.left
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 0
-                    anchors.topMargin: 0
-                    anchors.bottomMargin: 0
 
-                    Button {
-                        id: helpbutton
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.leftMargin: 0
-                        anchors.rightMargin: 0
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: 432
-                        background: null
+                    ColumnLayout {
+                        anchors.fill: parent
+                        spacing: 20   // khoảng cách giữa các button
+                        anchors.margins: 20
 
-                        Image {
-                            id: image7
-                            anchors.fill: parent
-                            source: "../images/svg_images/help_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48(1).svg"
-                            fillMode: Image.PreserveAspectFit
-                        }
-                        onClicked: {
-                            var component = Qt.createComponent("pages/Help.qml")
-                            if (component.status === Component.Ready) {
-                                var win = component.createObject(null)
-                                if (win) {
-                                    win.visible = true
-                                }
-                            } else {
-                                console.log("Lỗi tải Help.qml:", component.errorString())
+                        // Home button
+                        Button {
+                            id: home
+                            Layout.preferredWidth: parent.width
+                            Layout.preferredHeight: 60
+                            background: null
+
+                            Image {
+                                anchors.fill: parent
+                                source: "../images/svg_images/home_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
+                                fillMode: Image.PreserveAspectFit
                             }
+                            onClicked: pageLoader.source = ""   // đóng mọi trang
                         }
-                    }
 
-                    Button {
-                        id: aboutusbutton
-                        text: qsTr("")
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: helpbutton.bottom
-                        anchors.bottom: parent.bottom
-                        anchors.leftMargin: 0
-                        anchors.rightMargin: 0
-                        anchors.topMargin: 363
-                        anchors.bottomMargin: 0
-                        background: null
-                        Image {
-                            id: image2213
-                            anchors.fill: parent
-                            source: "../images/svg_images/groups_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
-                            fillMode: Image.PreserveAspectFit
-                        }
-                        onClicked: {
-                            var component = Qt.createComponent("pages/Aboutus.qml")
-                            if (component.status === Component.Ready) {
-                                var win = component.createObject(null)
-                                if (win) {
-                                    win.visible = true
+                        // Help button
+                        Button {
+                            id: helpbutton
+                            Layout.preferredWidth: parent.width
+                            Layout.preferredHeight: 60
+                            background: null
+
+                            Image {
+                                anchors.fill: parent
+                                source: "../images/svg_images/help_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48(1).svg"
+                                fillMode: Image.PreserveAspectFit
+                            }
+                            onClicked: {
+                                if (pageLoader.source === "pages/Help.qml") {
+                                    pageLoader.source = ""
+                                } else {
+                                    pageLoader.source = "pages/Help.qml"
                                 }
-                            } else {
-                                console.log("Lỗi tải Aboutus.qml:", component.errorString())
                             }
                         }
 
+                        // About us button
+                        Button {
+                            id: aboutusbutton
+                            Layout.preferredWidth: parent.width
+                            Layout.preferredHeight: 60
+                            background: null
+
+                            Image {
+                                anchors.fill: parent
+                                source: "../images/svg_images/groups_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
+                                fillMode: Image.PreserveAspectFit
+                            }
+                            onClicked: {
+                                if (pageLoader.source === "pages/Aboutus.qml") {
+                                    pageLoader.source = ""
+                                } else {
+                                    pageLoader.source = "pages/Aboutus.qml"
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -543,13 +540,20 @@ Window {
                         }
                     }
                 }
+
+                Loader {
+                    id: pageLoader
+                    anchors.fill: parent
+                    anchors.leftMargin: 70
+                }
             }
         }
     }
+
     Loader {
         id: robotface
         objectName: "pageLoader" // 👉 thêm dòng này
-        visible: true
+        visible: false
         anchors.fill: parent
         anchors.leftMargin: 0
         anchors.rightMargin: 0
@@ -574,4 +578,5 @@ Window {
             mouse.accepted = false;
         }
     }
+
 }
