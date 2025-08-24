@@ -452,7 +452,7 @@ Window {
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        anchors.leftMargin: 12
+                        anchors.leftMargin: 0
                         anchors.rightMargin: 0
                         anchors.topMargin: 0
                         anchors.bottomMargin: 0
@@ -505,13 +505,14 @@ Window {
                                 }
 
                                 Label {
-                                    id: label2
+                                    id: availablelabel
                                     color: "#ffffff"
                                     text: qsTr("Available:")
+                                    state: ""
                                 }
 
                                 Label {
-                                    id: label5
+                                    id: available
                                     color: "#fffdfd"
                                     text: qsTr("Yes or Not")
                                 }
@@ -533,13 +534,13 @@ Window {
                                 }
 
                                 Label {
-                                    id: label4
+                                    id: box1label
                                     color: "#ffffff"
                                     text: qsTr("Box1: ")
                                 }
 
                                 Label {
-                                    id: label6
+                                    id: box2label
                                     color: "#ffffff"
                                     text: qsTr("Box2:")
                                 }
@@ -566,7 +567,7 @@ Window {
     Loader {
         id: robotface
         objectName: "pageLoader" // 👉 thêm dòng này
-        visible: false
+        visible: true
         anchors.fill: parent
         anchors.leftMargin: 0
         anchors.rightMargin: 0
