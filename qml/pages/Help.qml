@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.15
 
 Rectangle {
     width: 952
-    height: 520
+    height: 538
 
     Rectangle {
         width: 1000
@@ -53,7 +53,7 @@ Rectangle {
                         color: "white"
                     }
                     Label {
-                        text: "1. Chọn chức năng mong muốn từ menu chính.\n2.Chọn bỉểu tượng box để đặt hàng và nhận hàng, Quét QR khi QR hiện lên \n3. Kiểm tra trạng thái hộp và vị trí ở các status ở bên phải.\n4.Chú ý đọc các thông báo từ Zippy'face nhỏ."
+                        text: "1.Chọn bỉểu tượng box để đặt hàng và nhận hàng, Quét QR khi QR hiện lên.\n2. Kiểm tra trạng thái hộp và vị trí ở các status ở bên phải.\n3.Chú ý đọc các thông báo từ Zippy'face nhỏ.\n4.CHÚ Ý ĐÓNG NẮP HỘP KHI NHẬN HÀNG/GỬI HÀNG."
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
                         color: "white"
@@ -66,7 +66,7 @@ Rectangle {
                         color: "white"
                     }
                     Label {
-                        text: "- Giữ kết nối mạng LAN để dữ liệu luôn được cập nhật.\n"  + "- Sạc Pin khi Pin Dưới 20%"
+                        text: "- Giữ kết nối mạng LAN để dữ liệu luôn được cập nhật."
                         wrapMode: Text.WordWrap
                         font.pixelSize: 18
                         color: "white"

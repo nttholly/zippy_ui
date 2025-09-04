@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.15
 
 Rectangle {
     width: 952
-    height: 520
+    height: 538
 
     Rectangle {
         width: 1000

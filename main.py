@@ -1,12 +1,14 @@
-from PySide6.QtWidgets import QApplication
-from PySide6.QtQml import QQmlApplicationEngine
-from PySide6.QtCore import QObject, Slot, Signal, QTimer
 import sys
 import psutil
 import base64
 import io
 from PIL import Image
-import requests   # ✅ Bổ sung import requests để bắt exception đúng
+import requests
+
+from PySide6.QtWidgets import QApplication
+from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtCore import QObject, Slot, Signal, QTimer
+
 from mqtt_client import MqttClient, MqttConfig
 from http_client import HttpClient
 
@@ -24,7 +26,7 @@ class BoxManager(QObject):
         self._batteryLevel = 0
         self.loader = None
         self.updateBatteryLevel()
-        self.http = HttpClient(base_url="http://192.168.0.107:8080", timeout=5.0)  # giảm timeout để tránh "treo"
+        self.http = HttpClient(base_url="http://192.168.0.107:8080", timeout=5.0)
 
     @Slot(str, result=str)
     def getQRPage(self, box_id):
@@ -43,15 +45,15 @@ class BoxManager(QObject):
             return self._solid_color_png_data_url((255, 100, 100))  # red
 
         try:
-            qr_b64 = self.http.fetch_qr_base64(path="/")  # adjust API path if needed
+            qr_b64 = self.http.fetch_qr_base64(path="/")  # chỉnh lại API path nếu cần
             if qr_b64:
                 print(f"[DEBUG] QR code fetched successfully for {box_id}.")
                 return f"data:image/png;base64,{qr_b64}"
             else:
-                print(f"[WARN] QR not found in JSON for {box_id}, returning gray placeholder.")
+                print(f"[WARN] QR not found for {box_id}, returning gray placeholder.")
                 return self._solid_color_png_data_url((220, 220, 220))
         except requests.exceptions.ConnectionError:
-            print(f"[ERROR] Cannot connect to API for {box_id}. Returning yellow warning placeholder.")
+            print(f"[ERROR] Cannot connect to API for {box_id}. Returning yellow warning.")
             return self._solid_color_png_data_url((255, 255, 102))
         except Exception as e:
             print(f"[ERROR] Unexpected error while fetching QR for {box_id}: {e}")
@@ -91,9 +93,17 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     engine = QQmlApplicationEngine()
 
+    # Khởi tạo BoxManager
     manager = BoxManager()
     engine.rootContext().setContextProperty("boxManager", manager)
 
+    # Khởi tạo MQTT
+    cfg = MqttConfig()  # chỉnh host/robot_id bên trong class MqttConfig
+    mqttClient = MqttClient(cfg)
+    mqttClient.connect()
+    engine.rootContext().setContextProperty("mqttClient", mqttClient)
+
+    # Load main.qml
     engine.load("qml/main.qml")
     if not engine.rootObjects():
         sys.exit(-1)
@@ -101,9 +111,10 @@ if __name__ == "__main__":
     window = engine.rootObjects()[0]
     loader = window.findChild(QObject, "pageLoader")
 
-    # Gán loader cho manager để có thể đổi trang từ Python
+    # Gán loader cho manager để đổi trang
     manager.loader = loader
 
+    # Idle timer để quay về RobotFace
     idle_timer = QTimer()
     idle_timer.setInterval(30_000)
     idle_timer.setSingleShot(True)
@@ -128,13 +139,20 @@ if __name__ == "__main__":
             try:
                 robot_face.robotClicked.connect(switch_to_mainpage)
             except Exception as e:
-                print("Không kết nối được signal robotClicked:", e)
+                print("❌ Không kết nối được signal robotClicked:", e)
 
     QTimer.singleShot(100, connect_robot_signal)
 
     try:
         window.userInteracted.connect(reset_idle_timer)
     except Exception as e:
-        print("Không thể kết nối signal userInteracted:", e)
+        print("❌ Không thể kết nối signal userInteracted:", e)
+
+    # In log khi nhận message từ MQTT
+    def handle_mqtt_msg(topic, payload):
+        print(f"[MQTT] {topic}: {payload}")
+        # TODO: có thể cập nhật QML label ở đây
+
+    mqttClient.messageReceived.connect(handle_mqtt_msg)
 
     sys.exit(app.exec())

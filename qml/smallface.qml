@@ -9,6 +9,34 @@ Rectangle {
 
     property string speechText: "Xin chào!"
 
+    // === Thêm: dãy label hiển thị tuần tự ===
+    property var labelSequence: ["Hello I'm Zippy", "Bạn yêu nhớ đóng\n nắp thùng hàng nhé <3", "Hmm...", "Bạn xinh đẹp đi\nđâu thế!", "Xem đây!", "Hehe ta tới đây!", "Đường này đây!\nPhải không nhỉ?"]
+    property int labelIndex: 0
+    function showNextLabel() {
+        if (labelSequence.length === 0)
+            return;
+        warningText.text = labelSequence[labelIndex % labelSequence.length];
+        labelIndex = (labelIndex + 1) % labelSequence.length;
+    }
+
+    // === Thêm: Timer quay vòng & giữ cảnh báo ===
+    Timer {
+        id: rotateTimer
+        interval: 2000      // 2 giây đổi câu
+        running: true
+        repeat: true
+        onTriggered: showNextLabel()
+    }
+
+    Timer {
+        id: warningHoldTimer
+        interval: 5000      // Giữ cảnh báo 5 giây rồi tiếp tục quay vòng
+        repeat: false
+        onTriggered: rotateTimer.start()
+    }
+
+    Component.onCompleted: showNextLabel()
+
     // --- Mắt ---
     Item {
         id: eyes
@@ -108,6 +136,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
 
         property real mouthSize: 30
+        y: 171
 
         Timer {
             interval: 300
@@ -128,28 +157,53 @@ Rectangle {
             ctx.fill();
         }
     }
+
+    // --- Cảnh báo từ boxManager: dùng chung warningText ---
     Connections {
         target: boxManager
         function onBoxAlert(boxId, message) {
-            if (boxId === "box1") {
-                alertLabel.text = message;
-                alertLabel.visible = true;
-            } else if (boxId === "box2") {
-                alertLabel.text = message;
-                alertLabel.visible = true;
-            }
+            rotateTimer.stop();
+            warningText.text = message;
+            warningHoldTimer.restart();
         }
     }
 
     // --- Văn bản ---
-    Text {
-        color: "#ffffff"
-        text: "Hello I'm ZIPPY!"
-        font.pixelSize: 18
+    Rectangle {
+        id: warningBox
+        width: warningText.implicitWidth + 20
+        height: warningText.implicitHeight + 20
+        radius: 12
+        color: "#4FC3F7"        // nền thông báo
+        border.color: "#ffffff"
+        border.width: 2
+        visible: warningText.text !== ""   // chỉ hiển thị khi có nội dung
+
         anchors.top: mouth.bottom
-        anchors.topMargin: -51
+        anchors.topMargin: -31
         anchors.horizontalCenter: parent.horizontalCenter
-        wrapMode: Text.Wrap
-        anchors.horizontalCenterOffset: 103
+        anchors.horizontalCenterOffset: 124
+
+        Text {
+            id: warningText
+            anchors.centerIn: parent
+            color: "#ffffff"
+            text: ""                    // sẽ được set bởi showNextLabel()
+            font.pixelSize: 18
+            wrapMode: Text.Wrap
+        }
+    }
+
+    // --- Cảnh báo từ MQTT: tạm dừng quay vòng, giữ 5s ---
+    Connections {
+        target: mqttClient
+        function onMessageReceived(topic, payload) {
+            if (topic.endsWith("/warning")) {
+                // payload = {title, message, time_stamp}
+                rotateTimer.stop();
+                warningText.text = "⚠️ " + payload.title + "\n" + payload.message;
+                warningHoldTimer.restart();
+            }
+        }
     }
 }

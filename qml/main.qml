@@ -65,17 +65,69 @@ Window {
                     height: 60
                     anchors.left: parent.left
                     anchors.top: parent.top
-                    anchors.leftMargin: 0
-                    anchors.topMargin: 0
                     background: null
 
                     Image {
-                        id: image8
                         anchors.fill: parent
                         source: "../images/svg_images/settings_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
                         fillMode: Image.PreserveAspectFit
                     }
+
+                    onClicked: passwordDialog.open()
                 }
+
+                Dialog {
+                    id: passwordDialog
+                    title: "Zippy Access Restricted"
+                    modal: true
+                    standardButtons: Dialog.Ok | Dialog.Cancel
+                    focus: true
+                    width: 952
+                    height: 538
+                    x: 70
+                    y: 70
+                    background: Rectangle {
+                        color: "#152063"        // màu nền
+                        radius: 12              // bo góc
+                        border.color: "#152063" // viền xanh
+                        border.width: 2
+                    }
+
+                    property string correctPassword: "tungkhanhlap"
+
+                    contentItem: Column {
+                        spacing: 20
+                        anchors.centerIn: parent    // 👉 thay vì anchors.fill
+                        width: parent.width * 0.6   // chỉ cần width, không fill chiều cao
+
+
+                        Label {
+                            text: "Enter password:"
+                            color: "white"
+                        }
+
+                        TextField {
+                            id: passwordField
+                            echoMode: TextInput.Password
+                            placeholderText: "Password"
+                            width: parent.width
+                        }
+                    }
+
+                    onAccepted: {
+                        if (passwordField.text === correctPassword) {
+                            pageLoader.source = "pages/list.qml"
+                        } else {
+                            console.log("❌ Sai mật khẩu")
+                        }
+                        passwordField.text = ""  // reset
+                    }
+
+                    onRejected: {
+                        passwordField.text = ""
+                    }
+                }
+
 
                 Rectangle {
                     id: topbardescription
@@ -103,6 +155,18 @@ Window {
                         anchors.bottomMargin: 0
                         verticalAlignment: Text.AlignVCenter
                     }
+                    Connections {
+                        target: mqttClient
+                        function onMessageReceived(topic, payload) {
+                            // tách theo dấu "/"
+                            var parts = topic.split("/")
+                            if (parts.length > 1) {
+                                var robotId = parts[1]   // "ROBOT-001"
+                                labeltopinfo.text = "Robot ID: " + robotId
+                            }
+                        }
+                    }
+
 
                     Rectangle {
                         id: pin
@@ -131,32 +195,6 @@ Window {
                             anchors.bottomMargin: 0
                             source: "../images/svg_images/bolt_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
                             fillMode: Image.PreserveAspectFit
-                        }
-                        Timer {
-                            id: batteryTimer
-                            interval: 5000 // 5 giây, bạn có thể giảm nếu muốn cập nhật nhanh hơn
-                            running: true
-                            repeat: true
-                            onTriggered: {
-                                boxManager.updateBatteryLevel();
-                                let level = boxManager.getBatteryLevel();
-                                pinbar.value = level;
-                                pintext.text = level + "%";
-
-                                if (level <= 20) {
-                                    pinbar.barColor = "#ff4500";  // đỏ
-                                } else if (level < 60) {
-                                    pinbar.barColor = "#ffa500";  // cam
-                                } else {
-                                    pinbar.barColor = "#90ee90";  // xanh lá
-                                }
-                            }
-                        }
-
-                        // Đảm bảo pinbar cập nhật đúng giá trị ban đầu
-                        Component.onCompleted: {
-                            boxManager.updateBatteryLevel();
-                            pinbar.value = boxManager.getBatteryLevel();
                         }
 
                         ProgressBar {
@@ -198,6 +236,24 @@ Window {
                             anchors.topMargin: 0
                             anchors.bottomMargin: 0
                             horizontalAlignment: Text.AlignHCenter
+                        }
+                        Connections {
+                            target: mqttClient
+                            function onMessageReceived(topic, payload) {
+                                if (topic.endsWith("/battery")) {
+                                    let level = payload.battery;
+                                    pinbar.value = level;
+                                    pintext.text = level + "%";
+
+                                    if (level <= 20) {
+                                        pinbar.barColor = "#ff4500";  // đỏ
+                                    } else if (level < 60) {
+                                        pinbar.barColor = "#ffa500";  // cam
+                                    } else {
+                                        pinbar.barColor = "#90ee90";  // xanh lá
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -346,14 +402,7 @@ Window {
                         radius: 0
                         border.color: "#081148"
                         border.width: 3
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.leftMargin: 0
-                        anchors.rightMargin: 483
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: 0
+                        anchors.fill: parent
 
                         Image {
                             id: image1
@@ -374,52 +423,24 @@ Window {
                             anchors.fill: parent
                             background: null
                             onClicked: {
-                                qrloader.source = "pages/QRdynamic.qml"
-                                qrloader.item.boxId = "box1"
-                                qrloader.visible = true
+                                qrloader.source = "pages/QRdynamic.qml";
+                                qrloader.item.boxId = "box1";
+                                qrloader.visible = true;
                             }
                         }
                     }
 
                     Rectangle {
-                        id: box2
-                        color: "#152063"
-                        radius: 0
-                        border.color: "#081148"
-                        border.width: 3
+                        id: rectangle
+                        color: "#00ffffff"
                         anchors.left: parent.left
-                        anchors.right: parent.right
+                        anchors.right: box1.left
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
-                        anchors.leftMargin: 467
+                        anchors.leftMargin: 0
                         anchors.rightMargin: 0
                         anchors.topMargin: 0
                         anchors.bottomMargin: 0
-
-                        Image {
-                            id: image2
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.bottom: parent.bottom
-                            anchors.leftMargin: 203
-                            anchors.rightMargin: 196
-                            anchors.topMargin: 69
-                            anchors.bottomMargin: 69
-                            source: "../images/svg_images/box_add_100dp_E3E3E3_FILL0_wght700_GRAD200_opsz48.svg"
-                            fillMode: Image.PreserveAspectFit
-                        }
-
-                        Button {
-                            id: button2
-                            anchors.fill: parent
-                            background: null
-                            onClicked: {
-                                qrloader.source = "pages/QRdynamic.qml"
-                                qrloader.item.boxId = "box2"
-                                qrloader.visible = true
-                            }
-                        }
                     }
                 }
 
@@ -487,6 +508,23 @@ Window {
                                     color: "#ffffff"
                                     text: qsTr("Here")
                                 }
+                                Connections {
+                                    target: mqttClient
+                                    function onMessageReceived(topic, payload) {
+                                        // robot/{robot_id}/location  Payload: {"roomCode":"DE-105"}
+                                        if (topic.endsWith("/location")) {
+                                            if (payload && payload.roomCode) {
+                                                location.text = "📍 " + payload.roomCode
+                                            } else if (payload && payload.x !== undefined && payload.y !== undefined) {
+                                                // fallback nếu bạn gửi toạ độ
+                                                location.text = "📍 (" + Number(payload.x).toFixed(2) + ", " + Number(payload.y).toFixed(2) + ")"
+                                            } else {
+                                                // fallback cuối cùng để dễ debug
+                                                location.text = "📍 " + JSON.stringify(payload)
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
                             RowLayout {
@@ -516,6 +554,20 @@ Window {
                                     color: "#fffdfd"
                                     text: qsTr("Yes or Not")
                                 }
+                                Connections {
+                                    target: mqttClient
+                                    function onMessageReceived(topic, payload) {
+                                        if (topic.endsWith("/status") && payload.status) {
+                                            let s = payload.status;           // "free" | "non-free"
+                                            s = s.charAt(0).toUpperCase() + s.slice(1);
+                                            available.text = s;
+                                            available.color = (payload.status === "free") ? "green" : "red";
+                                        }
+                                    }
+                                }
+
+
+
                             }
 
                             RowLayout {
@@ -534,16 +586,23 @@ Window {
                                 }
 
                                 Label {
-                                    id: box1label
+                                    id: boxlabel
                                     color: "#ffffff"
-                                    text: qsTr("Box1: ")
+                                    text: qsTr("Box: ")
+                                }
+                                Connections {
+                                    target: mqttClient
+                                    function onMessageReceived(topic, payload) {
+                                        if (topic.endsWith("/container")) {
+                                            const statusText = (payload.status === "free") ? "Empty" : "Full";
+                                            const closedText = (String(payload.isClosed).toLowerCase() === "true") ? "Closed" : "Opened";
+                                            const w = (payload.weight !== undefined) ? Number(payload.weight).toFixed(2) + " g" : "n/a";
+                                            boxlabel.text = `Box: ${statusText} | ${closedText} | ${w}`;
+                                            boxlabel.color = (statusText === "Full") ? "red" : "green";
+                                        }
+                                    }
                                 }
 
-                                Label {
-                                    id: box2label
-                                    color: "#ffffff"
-                                    text: qsTr("Box2:")
-                                }
                             }
                         }
                     }
@@ -554,6 +613,7 @@ Window {
                     anchors.fill: parent
                     anchors.leftMargin: 70
                 }
+
             }
         }
     }
@@ -562,12 +622,48 @@ Window {
         id: qrloader
         anchors.fill: parent
         visible: false
+        z: 9999
+    }
+    Connections {
+        target: mqttClient
+        function onMessageReceived(topic, payload) {
+            if (!topic.endsWith("/qr-code")) return;
+
+            var st = Number(payload.status); // 1 = HIỂN THỊ, 0 = TẮT
+
+            if (st === 1) {
+                // Nếu đã có item thì chỉ cập nhật, tránh reload tốn thời gian
+                if (qrloader.item && qrloader.item.applyQrPayload) {
+                    qrloader.item.applyQrPayload(payload);
+                } else {
+                    // Qt >= 5.10: setSource(url, props)
+                    if (qrloader.setSource) {
+                        qrloader.setSource("pages/QRdynamic.qml", { initialPayload: payload });
+                    } else {
+                        // Fallback Qt cũ
+                        qrloader.source = "pages/QRdynamic.qml";
+                        Qt.callLater(function(){
+                            if (qrloader.item && qrloader.item.applyQrPayload)
+                                qrloader.item.applyQrPayload(payload);
+                        });
+                    }
+                }
+                qrloader.visible = true;
+                qrloader.active  = true;
+
+            } else if (st === 0) {
+                // Ẩn + giải phóng tài nguyên
+                qrloader.visible = false;
+                qrloader.active  = false;
+                qrloader.source  = "";
+            }
+        }
     }
 
     Loader {
         id: robotface
         objectName: "pageLoader" // 👉 thêm dòng này
-        visible: true
+        visible: false
         anchors.fill: parent
         anchors.leftMargin: 0
         anchors.rightMargin: 0
