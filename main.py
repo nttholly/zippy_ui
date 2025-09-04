@@ -100,7 +100,7 @@ if __name__ == "__main__":
     # Khởi tạo MQTT
     cfg = MqttConfig()  # chỉnh host/robot_id bên trong class MqttConfig
     mqttClient = MqttClient(cfg)
-    mqttClient.connect()
+    mqttClient.connectToBroker()
     engine.rootContext().setContextProperty("mqttClient", mqttClient)
 
     # Load main.qml

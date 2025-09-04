@@ -51,7 +51,7 @@ class MqttClient(QtCore.QObject):
         self._health_timer.start()
 
     # ---------- Lifecycle ----------
-    def connect(self):
+    def connectToBroker(self):
         try:
             print(f"[MQTT][CONNECT] -> {self.cfg.host}:{self.cfg.port} as {self.cfg.robotCode}")
             self._client.connect(self.cfg.host, self.cfg.port, self.cfg.keepalive)
@@ -59,7 +59,7 @@ class MqttClient(QtCore.QObject):
         except Exception as e:
             self.errorOccurred.emit(f"MQTT connect failed: {e}")
 
-    def disconnect(self):
+    def disconnectFromBroker(self):
         try:
             self._client.loop_stop()
             self._client.disconnect()
