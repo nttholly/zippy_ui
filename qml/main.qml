@@ -663,7 +663,7 @@ Window {
     Loader {
         id: robotface
         objectName: "pageLoader" // 👉 thêm dòng này
-        visible: false
+        visible: true
         anchors.fill: parent
         anchors.leftMargin: 0
         anchors.rightMargin: 0
